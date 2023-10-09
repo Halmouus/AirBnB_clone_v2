@@ -5,7 +5,7 @@ web servers using the function do_deploy
 """
 
 from fabric.api import env, put, run
-from os.path import exists, splitext, basename
+import os
 
 env.hosts = ['18.204.5.75', '52.3.244.101']
 
@@ -14,22 +14,19 @@ def do_deploy(archive_path):
     """
     Distribute an archive to the web servers using the function do_deploy
     """
-    if not exists(archive_path):
+    if not os.path.exists(archive_path):
         return False
 
     try:
-        archive_name = basename(archive_path)
-        dest = splitext(archive_name)[0]
-        tmp = "/tmp/{}".format(archive_name)
-        path = "/data/web_static/releases/{}".format(dest)
-        put(archive_path, '/tmp/')
-        run('mkdir -p {}'.format(path))
-        run('tar -xzf {}  -C {}'.format(tmp, path))
-        run('rm {}'.format(tmp))
-        run('mv {}/web_static/* {}/'.format(path, path))
-        run('rm -rf {}/web_static'.format(path))
-        run('rm -rf /data/web_static/current')
-        run('ln -s {} /data/web_static/current'.format(path))
+        put(archive_path, "/tmp/")
+        filename = os.path.basename(archive_path)
+        dirname = f"/data/web_static/releases/{filename.split('.')[0]}"
+        run(f"mkdir -p {dirname}")
+        run(f"tar -xzf /tmp/{filename} -C {dirname}")
+        run(f"rm /tmp/{filename}")
+        slink = "/data/web_static/current"
+        run(f"rm -rf {slink}")
+        run(f"ln -s {dirname} {slink}")
         return True
 
     except Exception:
