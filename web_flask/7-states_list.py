@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """script that starts a Flask web application"""
-from flask import Flask, render_template
+from flask import Flask, render_template, app
 from models import storage
 from models.state import State
 from models.city import City
@@ -8,6 +8,7 @@ from models.city import City
 app = Flask(__name__)
 
 
+@app.route("/states_list", strict_slashes=False)
 def states_list():
     """Display a list of states and their cities"""
     states = list(storage.all(State).values())
