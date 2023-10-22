@@ -9,6 +9,7 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 
+
 class FileStorage:
     """This class manages storage of hbnb models in JSON format"""
     __file_path = 'file.json'
@@ -17,7 +18,7 @@ class FileStorage:
     def all(self, cls=None):
         """Returns a dictionary of instances of a class currently in storage"""
         if (cls):
-            return {k: v for k,v in self.__objects.items() 
+            return {k: v for k, v in self.__objects.items()
                     if type(v) == cls}
         return self.__objects
 
@@ -38,8 +39,8 @@ class FileStorage:
         """Deletes an object from storage"""
         if (obj and f"{obj.__class__.__name__}.{obj.id}" in self.all()):
             k = f"{obj.__class__.__name__}.{obj.id}"
-            self.all().pop(k)            
-        
+            self.all().pop(k)
+
     def reload(self):
         """Loads storage dictionary from file"""
         classes = {
@@ -52,7 +53,7 @@ class FileStorage:
             with open(FileStorage.__file_path, 'r') as f:
                 temp = json.load(f)
                 for key, val in temp.items():
-                        self.all()[key] = classes[val['__class__']](**val)
+                    self.all()[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
 
